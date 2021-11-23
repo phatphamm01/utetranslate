@@ -1,5 +1,6 @@
 import { ILanguage, languge } from "@common/constant/language";
 import { Translate } from "iconsax-react";
+import { useRouter } from "next/dist/client/router";
 import {
   Dispatch,
   FC,
@@ -77,16 +78,19 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
   getSelectInput,
   getSelectOutput,
 }) => {
+  const router = useRouter();
+
   const refInput = useRef<HTMLUListElement>(null);
   const refOutput = useRef<HTMLUListElement>(null);
   const [isActiveInput, setIsActiveInput] = useToggleAndCloseVer2(refInput);
   const [isActiveOutput, setIsActiveOutput] = useToggleAndCloseVer2(refOutput);
-  const [selectInput, setSelectInput] = useState<ILanguage>(
-    languge.find((value) => value.LanguageCode === "vi")!
-  );
-  const [selectOutput, setSelectOutput] = useState<ILanguage>(
-    languge.find((value) => value.LanguageCode === "en")!
-  );
+
+  const [selectInput, setSelectInput] = useState<ILanguage>();
+  const [selectOutput, setSelectOutput] = useState<ILanguage>();
+
+  useEffect(() => {
+    handleFirstParam();
+  }, []);
 
   useEffect(() => {
     if (getSelectInput) {
@@ -97,6 +101,54 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
       getSelectOutput(selectOutput);
     }
   }, [selectInput, selectOutput]);
+
+  const handleFirstParam = () => {
+    let url = new URL(location.origin + router.asPath);
+
+    let from = url.searchParams.getAll("from");
+    let to = url.searchParams.getAll("to");
+    let text = url.searchParams.getAll("text");
+
+    let query: { from?: string; to?: string; text?: string | string[] } = {
+      from: from[0],
+      to: to[0],
+      text: text,
+    };
+
+    if (from.length !== 1 && to.length !== 1) {
+      query = { from: "vi", to: "en", text: text };
+    } else {
+      if (from.length !== 1) {
+        query = { from: "vi", to: to[0], text: text };
+      }
+      if (to.length !== 1) {
+        query = { from: from[0], to: "en", text: text };
+      }
+    }
+
+    let fromSelect = handleSetDefault(from[0]);
+    let toSelect = handleSetDefault(to[0]);
+
+    if (!fromSelect && !toSelect) {
+      query = { from: "vi", to: "en", text: text };
+    } else {
+      if (!fromSelect) {
+        query = { from: "vi", to: to[0], text: text };
+      }
+      if (!languge.find((value) => value.LanguageCode === to[0])) {
+        query = { from: from[0], to: "en", text: text };
+      }
+    }
+
+    router.push({ query: query });
+
+    setSelectInput(handleSetDefault(query.from!));
+    setSelectOutput(handleSetDefault(query.to!));
+  };
+
+  const handleSetDefault = (defaultCode: string) => {
+    return languge.find((value) => value.LanguageCode === defaultCode);
+  };
 
   const handleChangeInput = (value: ILanguage) => {
     setSelectInput(value);
