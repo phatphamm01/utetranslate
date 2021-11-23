@@ -40,9 +40,10 @@ const Home: FC<IHome> = () => {
 
   useEffect(() => {
     handleCallApi();
-    let {
-      query: { from, to, text },
-    } = router;
+
+    let url = new URL(location.origin + router.asPath);
+    let from = url.searchParams.getAll("from");
+    let to = url.searchParams.getAll("to");
 
     if (input === "") {
       router.push({ query: { from: from, to: to } });
