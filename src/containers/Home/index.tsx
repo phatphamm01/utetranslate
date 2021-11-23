@@ -34,23 +34,36 @@ const Home: FC<IHome> = () => {
 
   useEffect(() => {
     let url = new URL(location.origin + router.asPath);
-    let text = url.searchParams.get("text") || "Hello world!";
-    setInput(text);
+    let text = url.searchParams.get("text");
+
+    setInput(text || "Hello world! Who I am.");
   }, []);
 
   useEffect(() => {
-    handleCallApi();
+    let query: any = {
+      from: selectInput?.LanguageCode || "en",
+      to: selectOutput?.LanguageCode || "vi",
+    };
 
-    let url = new URL(location.origin + router.asPath);
-    let from = url.searchParams.getAll("from");
-    let to = url.searchParams.getAll("to");
-
-    if (input === "") {
-      router.push({ query: { from: from, to: to } });
-      return;
+    if (input?.trim() !== "") {
+      query.text = input;
     }
 
-    router.push({ query: { from: from, to: to, text: input } });
+    if (selectInput && selectOutput) {
+      handleCallApi();
+
+      console.log(query);
+
+      router.replace({
+        query: query,
+      });
+    }
+  }, [input]);
+
+  useEffect(() => {
+    if (input) return;
+    clearTimeout(timer.current);
+    setOutput("");
   }, [input]);
 
   useEffect(() => {
@@ -60,11 +73,6 @@ const Home: FC<IHome> = () => {
   useEffect(() => {
     handleCallApi();
   }, [selectOutput]);
-
-  useEffect(() => {
-    if (input) return;
-    setOutput("");
-  }, [input]);
 
   const handleCallApi = () => {
     if (input.trim() === "") return;
@@ -82,9 +90,18 @@ const Home: FC<IHome> = () => {
     }, 300);
   };
 
+  const handleChangeOutput = (data: string) => {
+    if (input !== "") {
+      console.log(input);
+
+      setOutput(data);
+    }
+  };
+
   const handleTranslateApi = (payload: ITranslateTextPayload) => {
     AWSTranslate.doTranslate(payload, (err, data) => {
-      setOutput(data.TranslatedText);
+      handleChangeOutput(data.TranslatedText);
+
       setLoading(false);
     });
   };

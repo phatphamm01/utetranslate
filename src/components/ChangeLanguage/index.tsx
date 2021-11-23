@@ -89,97 +89,153 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
   const [selectOutput, setSelectOutput] = useState<ILanguage>();
 
   useEffect(() => {
-    handleFirstParam();
+    let url = new URL(location.origin + router.asPath);
+
+    let from = url.searchParams.getAll("from");
+    let to = url.searchParams.getAll("to");
+
+    let queryParams = handleFirstParamNull({ from, to });
+    if (!queryParams) {
+      queryParams = handleFirstParamNotfound({ from, to });
+    }
+
+    if (queryParams) {
+      let inputSelect = handleSetDefault(queryParams?.from!, "en")!;
+      let outputSelect = handleSetDefault(queryParams?.to!, "vi")!;
+      handleChangeInput(inputSelect);
+      handleChangeOutput(outputSelect);
+      return;
+    }
+
+    let inputSelect = handleSetDefault(from[0], "en")!;
+    let outputSelect = handleSetDefault(to[0], "vi")!;
+    handleChangeInput(inputSelect);
+    handleChangeOutput(outputSelect);
   }, []);
 
   useEffect(() => {
     let url = new URL(location.origin + router.asPath);
-    let to = url.searchParams.get("to");
     let text = url.searchParams.get("text");
 
-    if (getSelectInput) {
-      getSelectInput(selectInput);
-      router.push({
-        query: { from: selectInput?.LanguageCode, to: to, text: text },
+    let query: any = {
+      from: selectInput?.LanguageCode || "en",
+      to: selectOutput?.LanguageCode || "vi",
+    };
+
+    if (text && text?.trim() !== "") {
+      query.text = text;
+    }
+
+    if (selectInput) {
+      console.log(query);
+
+      router.replace({
+        query: query,
       });
     }
   }, [selectInput]);
 
   useEffect(() => {
     let url = new URL(location.origin + router.asPath);
-    let from = url.searchParams.get("from");
     let text = url.searchParams.get("text");
 
-    if (getSelectOutput) {
-      getSelectOutput(selectOutput);
-      router.push({
-        query: { from: from, to: selectOutput?.LanguageCode, text: text },
+    let query: any = {
+      from: selectInput?.LanguageCode || "en",
+      to: selectOutput?.LanguageCode || "vi",
+    };
+
+    if (text && text?.trim() !== "") {
+      query.text = text;
+    }
+
+    if (selectOutput) {
+      console.log(query);
+
+      router.replace({
+        query: query,
       });
     }
   }, [selectOutput]);
 
-  const handleFirstParam = () => {
-    let url = new URL(location.origin + router.asPath);
-
-    let from = url.searchParams.getAll("from");
-    let to = url.searchParams.getAll("to");
-    let text = url.searchParams.getAll("text");
-
-    let query: { from?: string; to?: string; text?: string | string[] } = {
-      from: from[0],
-      to: to[0],
-      text: text,
-    };
+  const handleFirstParamNull = ({
+    from,
+    to,
+  }: {
+    from: string | string[];
+    to: string | string[];
+  }) => {
+    let query: { from?: string; to?: string } = {};
 
     if (from.length !== 1 && to.length !== 1) {
-      query = { from: "en", to: "vi", text: text };
+      query = { from: "en", to: "vi" };
+      return query;
     } else {
       if (from.length !== 1) {
-        query = { from: "en", to: to[0], text: text };
+        query = { from: "en", to: to[0] };
+        return query;
       }
       if (to.length !== 1) {
-        query = { from: from[0], to: "vi", text: text };
+        query = { from: from[0], to: "vi" };
+        return query;
       }
     }
 
+    return null;
+  };
+
+  const handleFirstParamNotfound = ({
+    from,
+    to,
+  }: {
+    from: string | string[];
+    to: string | string[];
+  }) => {
     let fromSelect = handleSetDefault(from[0]);
     let toSelect = handleSetDefault(to[0]);
 
+    let query: { from?: string; to?: string } = {};
+
     if (!fromSelect && !toSelect) {
-      query = { from: "en", to: "vi", text: text };
+      query = { from: "en", to: "vi" };
+      return query;
     } else {
       if (!fromSelect) {
-        query = { from: "en", to: to[0], text: text };
+        query = { from: "en", to: to[0] };
+        return query;
       }
-      if (!languge.find((value) => value.LanguageCode === to[0])) {
-        query = { from: from[0], to: "vi", text: text };
+      if (!toSelect) {
+        query = { from: from[0], to: "vi" };
+        return query;
       }
     }
 
-    router.push({ query: query });
-
-    setSelectInput(handleSetDefault(query.from!));
-    setSelectOutput(handleSetDefault(query.to!));
-  };
-
-  const handleSetDefault = (defaultCode: string) => {
-    return languge.find((value) => value.LanguageCode === defaultCode);
+    return null;
   };
 
   const handleChangeInput = (value: ILanguage) => {
     setSelectInput(value);
+    getSelectInput?.(value);
     setIsActiveInput(false);
   };
 
   const handleChangeOutput = (value: ILanguage) => {
+    if (value?.LanguageCode == "auto") return;
     setSelectOutput(value);
+    getSelectOutput?.(value);
     setIsActiveOutput(false);
   };
 
   const handleConvert = () => {
     let replate = selectInput;
-    setSelectInput(selectOutput);
-    setSelectOutput(replate);
+    handleChangeInput(selectOutput!);
+    handleChangeOutput(replate!);
+  };
+
+  const handleSetDefault = (defaultCode: string, param?: string) => {
+    let result = languge.find((value) => value.LanguageCode === param);
+    if (result) return result;
+
+    return languge.find((value) => value.LanguageCode === defaultCode);
   };
 
   return (

@@ -28,8 +28,8 @@ const useToggleAndCloseVer2 = (
     }
   }, [state]);
 
-  const toggle = useCallback((): void => setState((state) => !state), []);
-  return [state, toggle];
+  // const toggle = useCallback((): void => setState((state) => !state), []);
+  return [state, setState];
 };
 
 export default useToggleAndCloseVer2;
