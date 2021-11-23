@@ -1,3 +1,4 @@
+import { ILanguage } from "@common/constant/language";
 import ChangeLanguage from "@components/ChangeLanguage";
 import Input from "@components/Input";
 import Header from "@components/Layout/Header";
@@ -21,12 +22,32 @@ const TranslateBox = styled.div`
 interface IHome {}
 
 const Home: FC<IHome> = () => {
-  const [input, setInput] = useState<string>("");
+  const [input, setInput] = useState<string>("Xin chào thế giới");
   const [output, setOutput] = useState<string>("");
   const [loading, setLoading] = useState<boolean>();
+  const [selectInput, setSelectInput] = useState<ILanguage>();
+  const [selectOutput, setSelectOutput] = useState<ILanguage>();
+
   const timer = useRef<any>(null);
 
   useEffect(() => {
+    handleCallApi();
+  }, [input]);
+
+  useEffect(() => {
+    handleCallApi();
+  }, [selectInput]);
+
+  useEffect(() => {
+    handleCallApi();
+  }, [selectOutput]);
+
+  useEffect(() => {
+    if (input) return;
+    setOutput("");
+  }, [input]);
+
+  const handleCallApi = () => {
     if (input.trim() === "") return;
     clearTimeout(timer.current);
     timer.current = setTimeout(() => {
@@ -34,18 +55,13 @@ const Home: FC<IHome> = () => {
 
       let payload: ITranslateTextPayload = {
         Text: input,
-        SourceLanguageCode: "auto",
-        TargetLanguageCode: "en",
+        SourceLanguageCode: selectInput?.LanguageCode || "auto",
+        TargetLanguageCode: selectOutput?.LanguageCode || "vi",
       };
 
       handleTranslateApi(payload);
     }, 300);
-  }, [input]);
-
-  useEffect(() => {
-    if (input) return;
-    setOutput("");
-  }, [input]);
+  };
 
   const handleTranslateApi = (payload: ITranslateTextPayload) => {
     AWSTranslate.doTranslate(payload, (err, data) => {
@@ -61,13 +77,15 @@ const Home: FC<IHome> = () => {
   return (
     <HomeContainer>
       <Header />
-      <ChangeLanguage />
+      <ChangeLanguage
+        getSelectInput={setSelectInput}
+        getSelectOutput={setSelectOutput}
+      />
       <HomeBox>
         <TranslateBox>
           <Input
             value={input}
             onChange={handleChangeInput}
-            micIcon
             volIcon
             placeholder="Vui lòng nhập văn bản vào đây ..."
           />
