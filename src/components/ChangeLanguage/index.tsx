@@ -1,6 +1,13 @@
 import { ILanguage, languge } from "@common/constant/language";
 import { Translate } from "iconsax-react";
-import { Dispatch, FC, SetStateAction, useRef, useState } from "react";
+import {
+  Dispatch,
+  FC,
+  SetStateAction,
+  useEffect,
+  useRef,
+  useState,
+} from "react";
 import useToggleAndCloseVer2 from "src/hooks/useToggleAndCloseVer2";
 import tw, { styled } from "twin.macro";
 
@@ -80,6 +87,16 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
   const [selectOutput, setSelectOutput] = useState<ILanguage>(
     languge.find((value) => value.LanguageCode === "en")!
   );
+
+  useEffect(() => {
+    if (getSelectInput) {
+      getSelectInput(selectInput);
+    }
+
+    if (getSelectOutput) {
+      getSelectOutput(selectOutput);
+    }
+  }, []);
 
   const handleChangeInput = (value: ILanguage) => {
     setSelectInput(value);
