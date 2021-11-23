@@ -116,13 +116,13 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     };
 
     if (from.length !== 1 && to.length !== 1) {
-      query = { from: "vi", to: "en", text: text };
+      query = { from: "en", to: "vi", text: text };
     } else {
       if (from.length !== 1) {
-        query = { from: "vi", to: to[0], text: text };
+        query = { from: "en", to: to[0], text: text };
       }
       if (to.length !== 1) {
-        query = { from: from[0], to: "en", text: text };
+        query = { from: from[0], to: "vi", text: text };
       }
     }
 
@@ -130,13 +130,13 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     let toSelect = handleSetDefault(to[0]);
 
     if (!fromSelect && !toSelect) {
-      query = { from: "vi", to: "en", text: text };
+      query = { from: "en", to: "vi", text: text };
     } else {
       if (!fromSelect) {
-        query = { from: "vi", to: to[0], text: text };
+        query = { from: "en", to: to[0], text: text };
       }
       if (!languge.find((value) => value.LanguageCode === to[0])) {
-        query = { from: from[0], to: "en", text: text };
+        query = { from: from[0], to: "vi", text: text };
       }
     }
 
