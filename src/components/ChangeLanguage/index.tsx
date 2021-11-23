@@ -93,14 +93,30 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
   }, []);
 
   useEffect(() => {
+    let url = new URL(location.origin + router.asPath);
+    let to = url.searchParams.get("to");
+    let text = url.searchParams.get("text");
+
     if (getSelectInput) {
       getSelectInput(selectInput);
+      router.push({
+        query: { from: selectInput?.LanguageCode, to: to, text: text },
+      });
     }
+  }, [selectInput]);
+
+  useEffect(() => {
+    let url = new URL(location.origin + router.asPath);
+    let from = url.searchParams.get("from");
+    let text = url.searchParams.get("text");
 
     if (getSelectOutput) {
       getSelectOutput(selectOutput);
+      router.push({
+        query: { from: from, to: selectOutput?.LanguageCode, text: text },
+      });
     }
-  }, [selectInput, selectOutput]);
+  }, [selectOutput]);
 
   const handleFirstParam = () => {
     let url = new URL(location.origin + router.asPath);
