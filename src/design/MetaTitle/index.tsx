@@ -1,14 +1,13 @@
 import Head from "next/head";
-import { TITLE_DEFAULT } from "@common/constants";
 
 interface ITitle {
   title: string;
 }
 
-const MetaTitle = ({ title = TITLE_DEFAULT }: ITitle) => {
+const MetaTitle = ({ title = "Translate" }: ITitle) => {
   return (
     <Head>
-      <title>{`${title} - Summon Shop`} </title>
+      <title>{`${title}`} </title>
     </Head>
   );
 };
