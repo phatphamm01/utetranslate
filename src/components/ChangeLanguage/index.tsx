@@ -96,24 +96,16 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     if (getSelectOutput) {
       getSelectOutput(selectOutput);
     }
-  }, []);
+  }, [selectInput, selectOutput]);
 
   const handleChangeInput = (value: ILanguage) => {
     setSelectInput(value);
     setIsActiveInput(false);
-
-    if (getSelectInput) {
-      getSelectInput(value);
-    }
   };
 
   const handleChangeOutput = (value: ILanguage) => {
     setSelectOutput(value);
     setIsActiveOutput(false);
-
-    if (getSelectOutput) {
-      getSelectOutput(value);
-    }
   };
 
   const handleConvert = () => {
