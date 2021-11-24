@@ -32,7 +32,7 @@ const Input: FC<IInput> = ({
   micIcon,
   volIcon,
   resize = false,
-  eventPoiter = true,
+  eventPoiter = false,
   placeholder = "...",
   onChange = () => {},
   value,

@@ -133,7 +133,7 @@ const Home: FC<IHome> = () => {
           <Input
             loading={loading}
             value={output}
-            eventPoiter={false}
+            eventPoiter={true}
             volIcon
             placeholder=""
           />
