@@ -100,6 +100,8 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     }
 
     if (queryParams) {
+      console.log(queryParams);
+
       let inputSelect = handleSetDefault(queryParams?.from!, "en")!;
       let outputSelect = handleSetDefault(queryParams?.to!, "vi")!;
       handleChangeInput(inputSelect);
@@ -107,6 +109,8 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
       return;
     }
 
+    console.log(from[0], " ", to[0]);
+    debugger;
     let inputSelect = handleSetDefault(from[0], "en")!;
     let outputSelect = handleSetDefault(to[0], "vi")!;
     handleChangeInput(inputSelect);
@@ -117,18 +121,15 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     let url = new URL(location.origin + router.asPath);
     let text = url.searchParams.get("text");
 
-    let query: any = {
-      from: selectInput?.LanguageCode || "en",
-      to: selectOutput?.LanguageCode || "vi",
-    };
+    debugger;
+    let query: any = handleInitQuery(url);
+    console.log(query);
 
     if (text && text?.trim() !== "") {
       query.text = text;
     }
 
     if (selectInput) {
-      console.log(query);
-
       router.replace({
         query: query,
       });
@@ -139,23 +140,29 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     let url = new URL(location.origin + router.asPath);
     let text = url.searchParams.get("text");
 
-    let query: any = {
-      from: selectInput?.LanguageCode || "en",
-      to: selectOutput?.LanguageCode || "vi",
-    };
+    let query: any = handleInitQuery(url);
+    console.log(query);
 
     if (text && text?.trim() !== "") {
       query.text = text;
     }
 
     if (selectOutput) {
-      console.log(query);
-
       router.replace({
         query: query,
       });
     }
   }, [selectOutput]);
+
+  const handleInitQuery = (url: URL) => {
+    let from = url.searchParams.get("from");
+    let to = url.searchParams.get("to");
+
+    return {
+      from: selectInput?.LanguageCode || from,
+      to: selectOutput?.LanguageCode || to,
+    };
+  };
 
   const handleFirstParamNull = ({
     from,
@@ -231,7 +238,7 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     handleChangeOutput(replate!);
   };
 
-  const handleSetDefault = (defaultCode: string, param?: string) => {
+  const handleSetDefault = (param: string, defaultCode?: string) => {
     let result = languge.find((value) => value.LanguageCode === param);
     if (result) return result;
 

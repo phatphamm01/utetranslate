@@ -12,10 +12,9 @@ const InputBox = styled.div`
 const InputMain = styled.div`
   ${tw`relative flex-grow`}
 `;
-const InputText = styled.textarea<{ resize: boolean; eventPoiter: boolean }>`
+const InputText = styled.textarea<{ resize: boolean }>`
   ${tw`w-full h-full outline-none p-4 text-lg font-medium text-gray-600`}
   resize: ${({ resize }) => (resize ? "vertical" : "none")};
-  pointer-events: ${({ eventPoiter }) => (eventPoiter ? "vertical" : "none")}; ;
 `;
 
 interface IInput {
@@ -45,7 +44,7 @@ const Input: FC<IInput> = ({
         <InputMain>
           <InputText
             value={value}
-            eventPoiter={eventPoiter}
+            disabled={eventPoiter}
             resize={resize}
             onChange={onChange}
             placeholder={placeholder}

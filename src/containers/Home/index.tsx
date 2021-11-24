@@ -40,10 +40,9 @@ const Home: FC<IHome> = () => {
   }, []);
 
   useEffect(() => {
-    let query: any = {
-      from: selectInput?.LanguageCode || "en",
-      to: selectOutput?.LanguageCode || "vi",
-    };
+    let url = new URL(location.origin + router.asPath);
+    let query: any = handleInitQuery(url);
+    console.log(query);
 
     if (input?.trim() !== "") {
       query.text = input;
@@ -51,8 +50,6 @@ const Home: FC<IHome> = () => {
 
     if (selectInput && selectOutput) {
       handleCallApi();
-
-      console.log(query);
 
       router.replace({
         query: query,
@@ -74,6 +71,16 @@ const Home: FC<IHome> = () => {
     handleCallApi();
   }, [selectOutput]);
 
+  const handleInitQuery = (url: URL) => {
+    let from = url.searchParams.get("from");
+    let to = url.searchParams.get("to");
+
+    return {
+      from: selectInput?.LanguageCode || from,
+      to: selectOutput?.LanguageCode || to,
+    };
+  };
+
   const handleCallApi = () => {
     if (input.trim() === "") return;
     clearTimeout(timer.current);
@@ -92,8 +99,6 @@ const Home: FC<IHome> = () => {
 
   const handleChangeOutput = (data: string) => {
     if (input !== "") {
-      console.log(input);
-
       setOutput(data);
     }
   };
