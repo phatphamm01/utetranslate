@@ -10,7 +10,8 @@ import {
   useState,
 } from "react";
 import useToggleAndCloseVer2 from "src/hooks/useToggleAndCloseVer2";
-import tw, { styled } from "twin.macro";
+import tw from "twin.macro";
+import styled from "styled-components";
 
 const ChangeLanguageContainer = styled.div`
   ${tw`relative my-14 max-w-[800px] mx-auto`}
@@ -100,8 +101,6 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     }
 
     if (queryParams) {
-      console.log(queryParams);
-
       let inputSelect = handleSetDefault(queryParams?.from!, "en")!;
       let outputSelect = handleSetDefault(queryParams?.to!, "vi")!;
       handleChangeInput(inputSelect);
@@ -109,8 +108,6 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
       return;
     }
 
-    console.log(from[0], " ", to[0]);
-    debugger;
     let inputSelect = handleSetDefault(from[0], "en")!;
     let outputSelect = handleSetDefault(to[0], "vi")!;
     handleChangeInput(inputSelect);
@@ -121,9 +118,7 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     let url = new URL(location.origin + router.asPath);
     let text = url.searchParams.get("text");
 
-    debugger;
     let query: any = handleInitQuery(url);
-    console.log(query);
 
     if (text && text?.trim() !== "") {
       query.text = text;
@@ -141,7 +136,6 @@ const ChangeLanguage: FC<IChangeLanguage> = ({
     let text = url.searchParams.get("text");
 
     let query: any = handleInitQuery(url);
-    console.log(query);
 
     if (text && text?.trim() !== "") {
       query.text = text;

@@ -1,6 +1,7 @@
-import { Microphone2, VolumeHigh } from "iconsax-react";
+import { Image, Microphone2, VolumeHigh } from "iconsax-react";
 import { FC } from "react";
-import tw, { styled } from "twin.macro";
+import tw from "twin.macro";
+import styled from "styled-components";
 
 const ControlContainer = styled.div`
   ${tw`w-full h-16`}
@@ -21,10 +22,11 @@ const IconBox = styled.div`
 
 interface IControl {
   micIcon?: boolean;
-  volIcon?: boolean;
+  volIcon?: any;
+  imageIcon?: any;
 }
 
-const Control: FC<IControl> = ({ micIcon, volIcon }) => {
+const Control: FC<IControl> = ({ micIcon, volIcon, imageIcon }) => {
   return (
     <ControlContainer>
       <ControlBox>
@@ -36,11 +38,17 @@ const Control: FC<IControl> = ({ micIcon, volIcon }) => {
           )}
           {volIcon && (
             <IconBox>
-              <VolumeHigh size="28" color="#535353" />
+              <VolumeHigh onClick={volIcon} size="28" color="#535353" />
             </IconBox>
           )}
         </ControlLeft>
-        <ControlRight></ControlRight>
+        <ControlRight>
+          {imageIcon && (
+            <IconBox>
+              <Image onClick={imageIcon} size="28" color="#535353" />
+            </IconBox>
+          )}
+        </ControlRight>
       </ControlBox>
     </ControlContainer>
   );

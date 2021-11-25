@@ -1,6 +1,7 @@
 import { FC, Fragment } from "react";
 import { keyframes } from "styled-components";
-import tw, { styled } from "twin.macro";
+import tw from "twin.macro";
+import styled from "styled-components";
 
 const LoadingContainer = styled.div`
   ${tw`absolute`}

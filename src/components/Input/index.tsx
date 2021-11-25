@@ -1,10 +1,19 @@
-import { ChangeEvent, FC, MutableRefObject, RefObject } from "react";
-import Loading from "@components/Input/components/Loading";
-import tw, { styled } from "twin.macro";
+import {
+  ChangeEvent,
+  FC,
+  MutableRefObject,
+  RefObject,
+  useEffect,
+  useRef,
+} from "react";
+import Loading from "@design/Loading";
+import tw from "twin.macro";
+import styled from "styled-components";
 import Control from "./components/Control";
+import TextareaAutosize from "react-textarea-autosize";
 
 const InputContainer = styled.div`
-  ${tw`min-h-[360px] border shadow-lg rounded-xl overflow-hidden`}
+  ${tw`min-h-[360px] border shadow-lg rounded-xl `}
 `;
 const InputBox = styled.div`
   ${tw`h-full flex flex-col`}
@@ -12,14 +21,16 @@ const InputBox = styled.div`
 const InputMain = styled.div`
   ${tw`relative flex-grow`}
 `;
-const InputText = styled.textarea<{ resize: boolean }>`
+const InputText = styled(TextareaAutosize)<{ resize: boolean }>`
   ${tw`w-full h-full outline-none p-4 text-lg font-medium text-gray-600`}
   resize: ${({ resize }) => (resize ? "vertical" : "none")};
+  min-height: 100%;
 `;
 
 interface IInput {
   micIcon?: boolean;
-  volIcon?: boolean;
+  volIcon?: any;
+  imageIcon?: any;
   resize?: boolean;
   eventPoiter?: boolean;
   value?: string;
@@ -31,6 +42,7 @@ interface IInput {
 const Input: FC<IInput> = ({
   micIcon,
   volIcon,
+  imageIcon,
   resize = false,
   eventPoiter = false,
   placeholder = "...",
@@ -38,11 +50,14 @@ const Input: FC<IInput> = ({
   value,
   loading = false,
 }) => {
+  const ref = useRef<HTMLTextAreaElement>(null);
+
   return (
     <InputContainer>
       <InputBox>
         <InputMain>
           <InputText
+            ref={ref}
             value={value}
             disabled={eventPoiter}
             resize={resize}
@@ -52,7 +67,7 @@ const Input: FC<IInput> = ({
 
           {loading && <Loading />}
         </InputMain>
-        <Control micIcon={micIcon} volIcon={volIcon} />
+        <Control imageIcon={imageIcon} micIcon={micIcon} volIcon={volIcon} />
       </InputBox>
     </InputContainer>
   );

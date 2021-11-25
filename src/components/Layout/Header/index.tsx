@@ -1,5 +1,6 @@
 import { FC } from "react";
-import tw, { styled } from "twin.macro";
+import tw from "twin.macro";
+import styled from "styled-components";
 
 const HeaderContainer = styled.div`
   ${tw`py-3 bg-blue-500 shadow`}
