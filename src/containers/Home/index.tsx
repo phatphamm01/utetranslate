@@ -138,7 +138,7 @@ const Home: FC<IHome> = () => {
   const refImage = useRef<HTMLDivElement>(null);
   const [openImage, setOpenImage] = useToggleAndCloseVer2(refImage);
   const [image, setImage] = useState(
-    "https://64.media.tumblr.com/bcc875cb54010cef943ffa80604bf127/aa9d2f2028298c26-6a/s1280x1920/708d13f063643573d4abfe50bfafc5009cf159e5.jpg"
+    "https://images.squarespace-cdn.com/content/v1/5930dc9237c5817c00b10842/1557980730821-E0BL40VN22LDSYKQH91O/images.png"
   );
   const [cropData, setCropData] = useState("#");
   const [cropper, setCropper] = useState<Cropper>();
